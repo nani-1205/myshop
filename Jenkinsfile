@@ -1,9 +1,4 @@
 pipeline {
-    agent {
-        node {
-            label 'docker-agent' // Replace 'docker-agent' with the label of your Jenkins agent that has Docker
-        }
-    }
     stages {
         stage('Build Image') {
             steps {
@@ -20,8 +15,6 @@ pipeline {
                         // Push the Docker image to Docker Hub
                         sh "docker push ${imageName}"
                     }
-
-
                 }
             }
         }
