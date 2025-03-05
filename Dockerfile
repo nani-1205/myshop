@@ -1,29 +1,17 @@
-# Use a base image
-FROM ubuntu:latest
+# Use an official Python image as a parent image
+FROM python:3.10
 
-# Set the working directory
+# Set the working directory in the container
 WORKDIR /app
 
-# Copy the entrypoint script and preserve execution permissions
-COPY entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
+# Copy the application files into the container
+COPY . /app/
 
-# Install necessary dependencies including Python
-RUN apt-get update && apt-get install -y \
-    curl \
-    vim \
-    python3 \
-    python3-pip \
-    && rm -rf /var/lib/apt/lists/*
+# Install any necessary dependencies
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Create a symlink so that 'python' command works
-RUN ln -s /usr/bin/python3 /usr/bin/python
-
-# Expose required ports (modify as needed)
+# Expose necessary ports
 EXPOSE 8080 9090 3306
 
-# Set the entrypoint script
-ENTRYPOINT ["/entrypoint.sh"]
-
-# Default command (can be overridden)
-CMD ["bash"]
+# Run the Django application
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8080"]
