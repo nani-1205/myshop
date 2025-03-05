@@ -1,17 +1,24 @@
-# Use an official Python image as a parent image
+# Use official Python image as base
 FROM python:3.10
 
-# Set the working directory in the container
+# Set environment variables
+ENV PYTHONUNBUFFERED=1 \
+    DJANGO_SETTINGS_MODULE=myshop.settings
+
+# Set the working directory
 WORKDIR /app
 
-# Copy the application files into the container
+# Copy all project files into the container
 COPY . /app/
 
-# Install any necessary dependencies
+# Install dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Expose necessary ports
-EXPOSE 8080 9090 3306
+# Collect static files
+RUN python manage.py collectstatic --noinput
 
-# Run the Django application
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8080"]
+# Expose the Django port
+EXPOSE 8080
+
+# Start the Django application
+CMD ["sh", "entrypoint.sh"]
