@@ -5,32 +5,26 @@ ENV PYTHONUNBUFFERED 1
 
 WORKDIR /app
 
-# Install system dependencies (required for psycopg2 and Pillow)
-RUN apk update && apk add --no-cache postgresql-dev gcc musl-dev python3-dev libjpeg-turbo-dev zlib-dev
+# Install system dependencies (only necessary ones)
+RUN apk add --no-cache libjpeg-turbo-dev zlib-dev
+
+# Create a non-root user
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 
 # Copy project files
-COPY myshop /app/myshop
-COPY shop /app/shop
-COPY users /app/users
-COPY orders /app/orders
-COPY static /app/static
-COPY templates /app/templates
-COPY manage.py /app/manage.py
-COPY requirements.txt /app/requirements.txt
-COPY Dockerfile /app/Dockerfile
-COPY Jenkinsfile /app/Jenkinsfile
+COPY . /app/
 
 # Install Python dependencies
-RUN pip install --no-cache-dir -r /app/requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Apply database migrations
-RUN python /app/manage.py makemigrations users
-RUN python /app/manage.py migrate
+# Set proper permissions
+RUN chown -R appuser:appgroup /app
+USER appuser
 
+# Expose port
 EXPOSE 8000
 
-# Set the PYTHONPATH environment variable
-ENV PYTHONPATH=/app
-
-#CMD to run the application
-CMD ["gunicorn", "myshop.wsgi:application", "--bind", "0.0.0.0:8000"]
+# Use entrypoint script
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+ENTRYPOINT ["/entrypoint.sh"]
