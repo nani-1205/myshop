@@ -1,0 +1,8 @@
+<h1>{{ product.name }}</h1>
+
+<img src="{{ product.image.url }}" alt="{{ product.name }}" style="width: 300px;">
+<p>{{ product.description }}</p>
+<p>Price: ${{ product.price }}</p>
+<p>Stock: {{ product.stock }}</p>
+
+<a href="{% url 'product_list' %}">Back to List</a>

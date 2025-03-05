@@ -1,0 +1,22 @@
+<h1>Product List</h1>
+
+<div class="categories">
+    <ul>
+        <li><a href="{% url 'product_list' %}">All</a></li>
+        {% for cat in categories %}
+            <li><a href="{% url 'product_list_by_category' cat.id %}">{{ cat.name }}</a></li>
+        {% endfor %}
+    </ul>
+</div>
+
+<div class="products">
+    {% for product in products %}
+        <div class="product">
+            <a href="{% url 'product_detail' product.id %}">
+                <img src="{{ product.image.url }}" alt="{{ product.name }}" style="width: 200px;">
+                <h3>{{ product.name }}</h3>
+                <p>${{ product.price }}</p>
+            </a>
+        </div>
+    {% endfor %}
+</div>
