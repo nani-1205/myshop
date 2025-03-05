@@ -5,11 +5,24 @@ ENV PYTHONUNBUFFERED 1
 
 WORKDIR /app
 
-COPY . /app/  # Copy all files from the project root
+# Explicitly copy each directory
+COPY myshop /app/myshop
+COPY shop /app/shop
+COPY users /app/users
+COPY orders /app/orders
+COPY static /app/static
+COPY templates /app/templates
+
+# Explicitly copy the top-level files
+COPY manage.py /app/manage.py
+COPY requirements.txt /app/requirements.txt
+COPY Dockerfile /app/Dockerfile
+COPY Jenkinsfile /app/Jenkinsfile
+
+# List Contents
+RUN ls -l /app
 
 RUN pip install --no-cache-dir -r requirements.txt
-
-RUN ls -l /app   #<---Add temporarily to verify the contents of the /app directory
 
 RUN python manage.py migrate
 
