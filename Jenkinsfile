@@ -1,20 +1,30 @@
 pipeline {
-    agent any  // or agent { label 'Jenkins' }  If you want a specific agent
+    agent any
+
     stages {
+        stage('Checkout Code') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Check Workspace') {
+            steps {
+                sh 'ls -l'  // List files to verify manage.py is present
+            }
+        }
+
         stage('Build Image') {
             steps {
                 script {
-                    // Replace with your Docker Hub username and image name
                     def imageName = "naniy9836/myshop:latest"
 
-                    // Build the Docker image
-                    sh "docker build -t ${imageName} ."
+                    // Build Docker image
+                    sh "docker build --no-cache -t ${imageName} ."
 
-                    //Login to dockerhub
+                    // Login and push to Docker Hub
                     withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
                         sh "docker login -u ${USERNAME} -p ${PASSWORD}"
-
-                        // Push the Docker image to Docker Hub
                         sh "docker push ${imageName}"
                     }
                 }
