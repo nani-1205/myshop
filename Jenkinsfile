@@ -1,4 +1,5 @@
 pipeline {
+    agent any  // or agent { label 'Jenkins' }  If you want a specific agent
     stages {
         stage('Build Image') {
             steps {
@@ -8,6 +9,7 @@ pipeline {
 
                     // Build the Docker image
                     sh "docker build -t ${imageName} ."
+
                     //Login to dockerhub
                     withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
                         sh "docker login -u ${USERNAME} -p ${PASSWORD}"
