@@ -20,6 +20,8 @@ COPY requirements.txt /app/requirements.txt
 COPY Dockerfile /app/Dockerfile
 COPY Jenkinsfile /app/Jenkinsfile
 
+RUN ls -l /app
+
 # Install Python dependencies
 RUN pip install --no-cache-dir -r /app/requirements.txt
 
@@ -29,5 +31,6 @@ RUN python /app/manage.py migrate
 
 EXPOSE 8000
 
-WORKDIR /app/myshop
-CMD gunicorn myshop.wsgi:application --bind 0.0.0.0:8000
+#Set the work directory, and then tell gunicorn how to run
+WORKDIR /app
+CMD ["gunicorn", "myshop.wsgi:application", "--bind", "0.0.0.0:8000"]
