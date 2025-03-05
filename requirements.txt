@@ -1,0 +1,6 @@
+Django==4.2.11  # Or your desired Django version
+gunicorn==21.2.0  # Or your desired Gunicorn version
+Pillow==10.2.0 # Or your desired Pillow version
+psycopg2-binary  # If you're using PostgreSQL
+
+#Add any other dependencies you want here
